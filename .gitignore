@@ -7,5 +7,16 @@ __pycache__/
 *$py.class
 
 # Jupyter Notebook
-.ipynb_checkpoints
 
+.ipynb_checkpoints/
+*.pyc
+*.html
+.project
+.pydevproject
+build/
+dist/
+pycrawler101.egg-info/
+.DS_Store
+CaseStudies/Angelist/
+
+.git

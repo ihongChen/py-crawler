@@ -1,0 +1,5 @@
+編號,土地區段位置,土地移轉面積平方公尺,使用分區或編定
+RPTNMLOJJIKFFDN09DC,黎明段,7.94,都市：其他
+RPTNMLOJJIKFFDN09DC,黎明段,60.98,都市：其他
+RPXNMLNKJIKFFDN76CC,永安段,70.09,都市：商
+RPXNMLNKJIKFFDN76CC,永安段,125.19,都市：商

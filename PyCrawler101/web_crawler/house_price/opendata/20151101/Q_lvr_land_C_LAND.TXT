@@ -1,0 +1,7 @@
+編號,土地區段位置,土地移轉面積平方公尺,使用分區或編定
+RPRNMLOJJIKFFBQ88CC,嘉朴段,85.00,都市：住
+RPSNMLOJJIKFFBQ98CC,嘉朴段,7.60,都市：住
+RPTNMLOJJIKFFBQ09CC,嘉朴段,7.60,都市：住
+RPQNMLTJJIKFFBQ66CC,嘉朴段,51.26,都市：住
+RPRNMLTJJIKFFBQ76CC,大�A榔段大葛小段,75.00,非都市：特定農業區 ; 非都市編定：甲種建築用地
+RPUNMLLKJIKFFBQ98CC,嘉朴段,7.60,都市：住

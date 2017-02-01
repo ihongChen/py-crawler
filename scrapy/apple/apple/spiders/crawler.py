@@ -4,11 +4,20 @@ import scrapy
 from bs4 import BeautifulSoup
 from apple.items import AppleItem
 
-class AppleCrawler(scrapy.Spider):
+## 多網頁爬取
+from scrapy.spider import CrawlSpider, Rule
+from scrapy.linkextractors import LinkExtractor
+
+# class AppleCrawler(scrapy.Spider):
+class AppleCrawler(CrawlSpider):
     name = 'apple'
     start_urls = ['http://www.appledaily.com.tw/realtimenews/section/new/']
-
-    def parse(self,response):
+    ## Rules,
+    rules = [
+        Rule(LinkExtractor(allow=('realtimenews/section/new/[1-3]$')),
+        callback='parse_list',follow=True)
+    ]
+    def parse_list(self,response):
         domain = 'http://www.appledaily.com.tw'
         res = BeautifulSoup(response.body)
         for news in res.select('.rtddt'):
