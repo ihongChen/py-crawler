@@ -1,9 +1,9 @@
 # python爬蟲練習集
 
 - [x] PyCrawler101課程資料
-  -  [exercise](https://github.com/ihongChen/py-crawler-intro/tree/master/PyCrawler101/exericse) (各種網站練習)
-  -  PyCrawler101-201510 (木刻思上課講義)
-  -  [web_crawler](https://github.com/ihongChen/py-crawler-intro/tree/master/PyCrawler101/web_crawler) (自己初次學習py的簡易講義)
+  -  [exercise](https://github.com/ihongChen/py-crawler-intro/tree/master/PyCrawler/exericse) (各種網站練習)
+  -  [PyCrawler101-201510](https://github.com/ihongChen/py-crawler-intro/tree/master/PyCrawler/PyCrawler101-201510) (木刻思上課講義)
+  -  [web_crawler](https://github.com/ihongChen/py-crawler-intro/tree/master/PyCrawler/web_crawler) (自己初次學習py的簡易講義)
 
 
 - [x] [基礎練習](https://github.com/ihongChen/py-crawler-intro/tree/master/%E5%9F%BA%E7%A4%8E%E7%B7%B4%E7%BF%92)
