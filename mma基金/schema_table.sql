@@ -24,11 +24,11 @@ CREATE TABLE MMA國內基金基本資料 (
 CREATE TABLE MMA國內基金歷任經理人(
 	
 	fundID CHAR(15) NOT NULL,
-	[台股績效(%)] DECIMAL(5,2),
-	[操作績效(%)] DECIMAL(5,2),
+	[台股績效(%)] VARCHAR(10),
+	[操作績效(%)] VARCHAR(10),
 	[時間] VARCHAR(100),
 	[期間(月)] VARCHAR(100),
-	[現任基金] nVARCHAR(1000),
+	[現任基金] nVARCHAR(3000),
 	[經理人] VARCHAR(100)
 )
 
@@ -137,3 +137,9 @@ SELECT * FROM MMA境外基金持股狀況_個股
 SELECT * FROM MMA境外基金持股狀況_分類
 
 
+
+
+
+alter table MMA國內基金歷任經理人
+-- alter column [操作績效(%)] VARCHAR(10)
+alter column [台股績效(%)] VARCHAR(10)
