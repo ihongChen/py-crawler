@@ -350,8 +350,8 @@ def getForeignStockHolding(soup):
     ### 資料月份 ###
     
     date_temp = soup.select('.wfb1ar')
-
-    if date_temp:
+    data_temp = soup.select('.wfb2l')
+    if date_temp and data_temp:
         update_date = '/'.join(re.findall(r"\d+",date_temp[-1].text)) ## 資料月份
         # print('資料月份:{}'.format(update_date))
         
@@ -419,7 +419,7 @@ def getForeignFundInfo(soup):
 if __name__ == '__main__':
 
     ## 連結database ## 
-    con = pypyodbc.connect("DRIVER={SQL Server};SERVER=dbm_public;UID=sa;PWD=01060728;DATABASE=External")
+    con = pypyodbc.connect("DRIVER={SQL Server};SERVER=xxxxxx;UID=xxxxxx;PWD=xxxxxxxx;DATABASE=External")
     
     ##### 基金id清單 ######
     # 國內
@@ -454,7 +454,7 @@ if __name__ == '__main__':
     print('=================='*2)
     
     ## 國內基金 ##
-    fundidsList = list(fundDict.keys())[625:]
+    fundidsList = list(fundDict.keys())
     ## 取得國內基金基本資料/經理人資料/持股狀況(個股/各分類) ##
     url_domestic_base = 'http://mmafund.sinopac.com/w/wr/'
     for no,fundid in enumerate(fundidsList):
@@ -481,28 +481,28 @@ if __name__ == '__main__':
         print('No.{} 國內基金: {} updated....'.format(no+1,fundid))
 
     ## 境外基金 ## 
-    # wfundidsList = list(wfundDict.keys())
-    # ## 取得境外基金 ##
-    # url_foreign_base = 'http://mmafund.sinopac.com/w/wb/'
-    # for no,wfundid in enumerate(wfundidsList):
-    #     html_foreign_info = requests.get(url_foreign_base + 'wb01.djhtm?a=' + wfundid).text
-    #     soup_foreign_info = BS(html_foreign_info,"lxml")
+    wfundidsList = list(wfundDict.keys())[440:]
+    ## 取得境外基金 ##
+    url_foreign_base = 'http://mmafund.sinopac.com/w/wb/'
+    for no,wfundid in enumerate(wfundidsList):
+        html_foreign_info = requests.get(url_foreign_base + 'wb01.djhtm?a=' + wfundid).text
+        soup_foreign_info = BS(html_foreign_info,"lxml")
 
-    #     html_foreign_stock = requests.get(url_foreign_base + 'wb04.djhtm?a=' + wfundid).text
-    #     soup_foreign_stock = BS(html_foreign_stock,"lxml")
+        html_foreign_stock = requests.get(url_foreign_base + 'wb04.djhtm?a=' + wfundid).text
+        soup_foreign_stock = BS(html_foreign_stock,"lxml")
 
-    #     fundInfo_foreign = getForeignFundInfo(soup_foreign_info)        
-    #     fundStock_foreign = getForeignStockHolding(soup_foreign_stock)
-    #     fundShare_foreign = getForeignShareHolding(html_foreign_stock)
+        fundInfo_foreign = getForeignFundInfo(soup_foreign_info)        
+        fundStock_foreign = getForeignStockHolding(soup_foreign_stock)
+        fundShare_foreign = getForeignShareHolding(html_foreign_stock)
 
-    #     dictToDb(fundInfo_foreign, '[MMA境外基金基本資料]', con)
-    #     dictToDb(fundStock_foreign, '[MMA境外基金持股狀況_個股]', con)
+        dictToDb(fundInfo_foreign, '[MMA境外基金基本資料]', con)
+        dictToDb(fundStock_foreign, '[MMA境外基金持股狀況_個股]', con)
 
-    #     if fundShare_foreign:
-    #         for index, wfundShare in enumerate(fundShare_foreign):                
-    #             dictToDb(wfundShare, '[MMA境外基金持股狀況_分類]', con)
+        if fundShare_foreign:
+            for index, wfundShare in enumerate(fundShare_foreign):                
+                dictToDb(wfundShare, '[MMA境外基金持股狀況_分類]', con)
 
-    #     print('NO.{} 境外基金: {} updated....'.format(no+1,wfundid))
+        print('NO.{} 境外基金: {} updated....'.format(no+1,wfundid))
 
     
 

@@ -1,7 +1,6 @@
 USE External 
 --- 國內--
 
-drop table MMA國內基金基本資料
 CREATE TABLE MMA國內基金基本資料 (
 	fundID CHAR(15) not null primary key,
 	主要投資區域 nVARCHAR(500),
@@ -19,8 +18,6 @@ CREATE TABLE MMA國內基金基本資料 (
 )
 
 
-
-
 CREATE TABLE MMA國內基金歷任經理人(
 	
 	fundID CHAR(15) NOT NULL,
@@ -31,7 +28,6 @@ CREATE TABLE MMA國內基金歷任經理人(
 	[現任基金] nVARCHAR(3000),
 	[經理人] VARCHAR(100)
 )
-
 
 
 CREATE TABLE MMA國內基金持股狀況_個股 (
@@ -49,8 +45,6 @@ CREATE TABLE MMA國內基金持股狀況_個股 (
 	
 )
 
-drop table MMA國內基金持股狀況_個股
-
 
 CREATE TABLE MMA國內基金持股狀況_分類(
 
@@ -65,19 +59,19 @@ CREATE TABLE MMA國內基金持股狀況_分類(
 	)
 	
 )
-drop table MMA國內基金持股狀況_分類
+
 --- 境外 ----
 
 CREATE TABLE [MMA境外基金基本資料] (
 
 	fundID CHAR(15) not null primary key ,
 	保管機構 VARCHAR(200),
-	傘狀基金 CHAR(2),
+	傘狀基金 CHAR(4),
 	台灣總代理 VARCHAR(50),
 	基金名稱 nVARCHAR(500),
 	基金英文名稱 VARCHAR(200),
 	基金規模 VARCHAR(50),
-	基金評等 DECIMAL(2,1),
+	基金評等 VARCHAR(4),
 	基金類型 VARCHAR(50),
 	成立日期 CHAR(10),
 	投資區域 VARCHAR(50),
@@ -90,13 +84,13 @@ CREATE TABLE [MMA境外基金基本資料] (
 	註冊地 VARCHAR(20)
 
 )
-drop table MMA境外基金基本資料
+
 
 
 CREATE TABLE [MMA境外基金持股狀況_個股] (
 
 	fundID CHAR(15),
-	持股名稱 VARCHAR(100),
+	持股名稱 VARCHAR(200),
 	比例 CHAR(8),
 	資料月份 CHAR(10),
 	CONSTRAINT [UK_mma_wstock] UNIQUE CLUSTERED
@@ -104,7 +98,7 @@ CREATE TABLE [MMA境外基金持股狀況_個股] (
         	[fundID], [持股名稱], [資料月份]
 	)
 )
-drop table MMA境外基金持股狀況_個股
+
 
 CREATE TABLE [MMA境外基金持股狀況_分類] (
 
@@ -119,7 +113,6 @@ CREATE TABLE [MMA境外基金持股狀況_分類] (
 	)
 )
 
-drop table MMA境外基金持股狀況_分類
 
 
 --------------------------------------------------------------------------------------------
@@ -139,7 +132,5 @@ SELECT * FROM MMA境外基金持股狀況_分類
 
 
 
-
-alter table MMA國內基金歷任經理人
--- alter column [操作績效(%)] VARCHAR(10)
-alter column [台股績效(%)] VARCHAR(10)
+ALTER TABLE MMA境外基金基本資料
+ALTER COLUMN 基金評等 VARCHAR(4)
