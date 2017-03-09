@@ -184,8 +184,8 @@ def getDomesticShareHolding(html_text):
             share_Holding_dict = getShareHoldingTable(table[colname])
             
             
-            typeName = ['持有類股','區域','產業']
-            share_Holding_dict['分類'] = typeName[index]
+            # typeName = ['持有類股','區域','產業'] ## 沒用了,之前有錯!
+            share_Holding_dict['分類'] = re.findall(r"產業|持有類股|區域", colname)[0]
             
             tableAns.append(share_Holding_dict)
         return tableAns
@@ -328,9 +328,9 @@ def getForeignShareHolding(html_text_wb):
             
             table[colname]= list(zip(titleList,valueList))
             
-            typeName = ['持有類股','區域','產業']
+            # typeName = ['持有類股','區域','產業'] # 沒在用啦!! 之前有錯~~
             share_Holding_Dict = getShareHoldingTable(table[colname])
-            share_Holding_Dict['分類'] = typeName[index]
+            share_Holding_Dict['分類'] = re.findall(r"產業|持有類股|區域", colname)[0]
             
             tableAns.append(share_Holding_Dict)
             
@@ -459,33 +459,33 @@ if __name__ == '__main__':
     print('=================='*2)
     
     ## 國內基金 ##
-    # fundidsList = list(fundDict.keys())
-    # ## 取得國內基金基本資料/經理人資料/持股狀況(個股/各分類) ##
-    # url_domestic_base = 'http://mmafund.sinopac.com/w/wr/'
-    # for no,fundid in enumerate(fundidsList):
-    #     html_domestic_info = requests.get(url_domestic_base + 'wr01.djhtm?a=' + fundid).text
-    #     soup_domestic_info = BS(html_domestic_info,"lxml")
+    fundidsList = list(fundDict.keys())
+    ## 取得國內基金基本資料/經理人資料/持股狀況(個股/各分類) ##
+    url_domestic_base = 'http://mmafund.sinopac.com/w/wr/'
+    for no,fundid in enumerate(fundidsList):
+        html_domestic_info = requests.get(url_domestic_base + 'wr01.djhtm?a=' + fundid).text
+        soup_domestic_info = BS(html_domestic_info,"lxml")
 
-    #     html_domestic_stock = requests.get(url_domestic_base + 'wr04.djhtm?a=' + fundid).text
-    #     soup_domestic_stock = BS(html_domestic_stock,"lxml")
+        html_domestic_stock = requests.get(url_domestic_base + 'wr04.djhtm?a=' + fundid).text
+        soup_domestic_stock = BS(html_domestic_stock,"lxml")
 
-    #     fundInfo_domestic = getFundBasicInfo(soup_domestic_info) 
-    #     fundManager_domestic = getFundManager(soup_domestic_info)
+        fundInfo_domestic = getFundBasicInfo(soup_domestic_info) 
+        fundManager_domestic = getFundManager(soup_domestic_info)
 
-    #     fundStock_domestic = getDomesticStockHolding(soup_domestic_stock) 
-    #     fundShare_domestic = getDomesticShareHolding(html_domestic_stock)
+        fundStock_domestic = getDomesticStockHolding(soup_domestic_stock) 
+        fundShare_domestic = getDomesticShareHolding(html_domestic_stock)
 
-    #     dictToDb(fundInfo_domestic,'[MMA國內基金基本資料]',con)
-    #     dictToDb(fundManager_domestic,'[MMA國內基金歷任經理人]',con)
+        dictToDb(fundInfo_domestic,'[MMA國內基金基本資料]',con)
+        dictToDb(fundManager_domestic,'[MMA國內基金歷任經理人]',con)
 
-    #     dictToDb(fundStock_domestic, '[MMA國內基金持股狀況_個股]', con)
+        dictToDb(fundStock_domestic, '[MMA國內基金持股狀況_個股]', con)
 
-    #     if fundShare_domestic:
+        if fundShare_domestic:
 
-    #         for index,fundShare in enumerate(fundShare_domestic):
-    #             dictToDb(fundShare, '[MMA國內基金持股狀況_分類]', con)
+            for index,fundShare in enumerate(fundShare_domestic):
+                dictToDb(fundShare, '[MMA國內基金持股狀況_分類]', con)
 
-    #         print('No.{} 國內基金: {} updated....'.format(no+1,fundid))
+            print('No.{} 國內基金: {} updated....'.format(no+1,fundid))
 
     ## 境外基金 ## 
     wfundidsList = list(wfundDict.keys())

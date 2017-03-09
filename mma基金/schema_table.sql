@@ -44,7 +44,7 @@ CREATE TABLE MMA國內基金持股狀況_個股 (
 	[資料月份] VARCHAR(8)
 	CONSTRAINT [UK_mmafund_stock] UNIQUE CLUSTERED
  	(
-        	fundID,資料月份,股票名稱
+        	fundID,股票名稱
 	)
 	
 )
@@ -59,7 +59,7 @@ CREATE TABLE MMA國內基金持股狀況_分類(
 	[項目] VARCHAR(50)
 	CONSTRAINT [UK_mmafund_share] UNIQUE CLUSTERED
  	(
-        	fundid,資料日期,分類,項目
+        	fundid,分類,項目
 	)
 	
 )
@@ -99,7 +99,7 @@ CREATE TABLE [MMA境外基金持股狀況_個股] (
 	資料月份 VARCHAR(10),
 	CONSTRAINT [UK_mma_wstock] UNIQUE CLUSTERED
  	(
-        	[fundID], [持股名稱], [資料月份]
+        	[fundID], [持股名稱]
 	)
 )
 
@@ -113,7 +113,7 @@ CREATE TABLE [MMA境外基金持股狀況_分類] (
 	項目 VARCHAR(50),
 	CONSTRAINT [UK_mma_wshare] UNIQUE CLUSTERED
  	(
-        	[fundID], [分類], [資料日期],[項目]
+        	[fundID], [分類],[項目]
 	)
 )
 
@@ -134,9 +134,5 @@ SELECT * FROM MMA境外基金持股狀況_個股
 SELECT * FROM MMA境外基金持股狀況_分類
 
 
-
-
-ALTER TABLE MMA國內基金基本資料
-ALTER COLUMN fundid VARCHAR(15)
 
 
