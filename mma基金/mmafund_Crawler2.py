@@ -488,7 +488,7 @@ def getPerformance(fundid):
 if __name__ == '__main__':
 
     ## 連結database ## 
-    con = pypyodbc.connect("DRIVER={SQL Server};SERVER=dbm_public;UID=sa;PWD=01060728;DATABASE=External")
+    con = pypyodbc.connect("DRIVER={SQL Server};SERVER=xxxx;UID=xxxxxx;PWD=xxxxxxx;DATABASE=External")
    
     ##### 基金id清單 ######
     # 國內
@@ -523,39 +523,39 @@ if __name__ == '__main__':
     print('MMA境外基金數:{}'.format(len(wfundDict)))
     print('=================='*2)
     
-    ## 國內基金 ##
-    fundidsList = list(fundDict.keys())
-    ## 取得國內基金基本資料/經理人資料/持股狀況(個股/各分類)/績效走勢 ##
-    url_domestic_base = 'http://mmafund.sinopac.com/w/wr/'
-    for no,fundid in enumerate(fundidsList):
-        html_domestic_info = requests.get(url_domestic_base + 'wr01.djhtm?a=' + fundid).text
-        soup_domestic_info = BS(html_domestic_info,"lxml") 
+    # ## 國內基金 ##
+    # fundidsList = list(fundDict.keys())
+    # ## 取得國內基金基本資料/經理人資料/持股狀況(個股/各分類)/績效走勢 ##
+    # url_domestic_base = 'http://mmafund.sinopac.com/w/wr/'
+    # for no,fundid in enumerate(fundidsList):
+    #     html_domestic_info = requests.get(url_domestic_base + 'wr01.djhtm?a=' + fundid).text
+    #     soup_domestic_info = BS(html_domestic_info,"lxml") 
 
-        html_domestic_stock = requests.get(url_domestic_base + 'wr04.djhtm?a=' + fundid).text
-        soup_domestic_stock = BS(html_domestic_stock,"lxml") 
+    #     html_domestic_stock = requests.get(url_domestic_base + 'wr04.djhtm?a=' + fundid).text
+    #     soup_domestic_stock = BS(html_domestic_stock,"lxml") 
 
-        fundInfo_domestic = getDomesticFundBasicInfo(soup_domestic_info) 
-        fundManager_domestic = getFundManager(soup_domestic_info) 
+    #     fundInfo_domestic = getDomesticFundBasicInfo(soup_domestic_info) 
+    #     fundManager_domestic = getFundManager(soup_domestic_info) 
 
-        fundStock_domestic = getDomesticStockHolding(soup_domestic_stock) 
-        fundShare_domestic = getDomesticShareHolding(html_domestic_stock) 
+    #     fundStock_domestic = getDomesticStockHolding(soup_domestic_stock) 
+    #     fundShare_domestic = getDomesticShareHolding(html_domestic_stock) 
 
-        fundPerformance = getPerformance(fundid)
+    #     fundPerformance = getPerformance(fundid)
 
-        dataToDb(fundInfo_domestic,'[MMA基金基本資料]',con)
-        dataToDb(fundManager_domestic,'[MMA國內基金歷任經理人]',con) 
-        dataToDb(fundStock_domestic, '[MMA基金持股狀況_個股]', con)
-        dataToDb(fundPerformance, '[MMA基金績效走勢]', con)
+    #     dataToDb(fundInfo_domestic,'[MMA基金基本資料]',con)
+    #     dataToDb(fundManager_domestic,'[MMA國內基金歷任經理人]',con) 
+    #     dataToDb(fundStock_domestic, '[MMA基金持股狀況_個股]', con)
+    #     dataToDb(fundPerformance, '[MMA基金績效走勢]', con)
 
-        if fundShare_domestic: 
+    #     if fundShare_domestic: 
 
-            for index,fundShare in enumerate(fundShare_domestic):
-                dataToDb(fundShare, '[MMA基金持股狀況_分類]', con) 
+    #         for index,fundShare in enumerate(fundShare_domestic):
+    #             dataToDb(fundShare, '[MMA基金持股狀況_分類]', con) 
 
-            print('No.{} 國內基金: {} updated....'.format(no+1,fundid)) 
+    #         print('No.{} 國內基金: {} updated....'.format(no+1,fundid)) 
 
     ## 境外基金 ## 
-    wfundidsList = list(wfundDict.keys())
+    wfundidsList = list(wfundDict.keys())[533:]
     ## 取得境外基金 ##
     url_foreign_base = 'http://mmafund.sinopac.com/w/wb/'
     for no,wfundid in enumerate(wfundidsList):
