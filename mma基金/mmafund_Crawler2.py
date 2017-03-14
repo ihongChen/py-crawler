@@ -50,9 +50,10 @@ def dataToDb(data_dict,table,con):
                 cursor.execute(sql_insert.format(table,fields,num_quest), values)
 
             except pypyodbc.IntegrityError:
-                fundid = row['fundid'][0] if type(row['fundid'])==list else row['fundid']
-                cursor.execute(sql_delete.format(table,fundid)) 
-                cursor.execute(sql_insert.format(table,fields,num_quest),list(row.values()))
+                pass
+                # fundid = row['fundid'][0] if type(row['fundid'])==list else row['fundid']
+                # cursor.execute(sql_delete.format(table,fundid)) 
+                # cursor.execute(sql_insert.format(table,fields,num_quest),list(row.values()))
 
         # print("oops~資料更新嚕!!")
         cursor.close()
@@ -155,6 +156,7 @@ def getDomesticFundBasicInfo(soup):
     for k,v in dataList:
         dataDict[k] = v
     dataDict['計價幣別'] = '台幣'
+    dataDict['更新時間'] = pd.datetime.today()
     return dataDict
 
 def getDomesticStockHolding(soup):
@@ -336,6 +338,7 @@ def getForeignFundInfo(soup):
         for name,v in dataList:
             fundInfo_dict[name] = v
         fundInfo_dict['境內外'] = '境外'
+        fundInfo_dict['更新時間'] = pd.datetime.today()
         return fundInfo_dict
 
 def getForeignShareHolding(html_text_wb):
@@ -443,12 +446,49 @@ def getForeignStockHolding(soup):
         return foreignStockDict
 
 
+def getPerformance(fundid):
+    '''取得基金績效指數
+    params
+    ======
+    input: fundid
+    output: dict-> {FundID:xxx, 比較基金:xxxx, ....}
+    '''
+    url = 'http://mmafund.sinopac.com/w/wr/wr03a.djhtm?a=' + fundid
+    soup = BS(requests.get(url).text,'lxml')
+
+    ## 第一個table ##
+    fund_property = [e.text for e in soup.select('#oMainTable')[1].select('td')]    
+    keys = fund_property[:8]
+    values = fund_property[8:]
+    fund_pref = { k:v for v,k in zip(values,keys)}
+    fund_pref.pop('基金名稱')
+    fund_pref['FundID'] = fundid
+
+    beta = fund_pref.pop('b')
+    fund_pref['Beta'] = beta
+
+    compare_index = soup.select('font')[-1].text
+    fund_pref['比較基金(或指數)'] = compare_index
+
+    ## 第二個table ##
+    fund_hist_perf = [e.text for e in soup.select('#oMainTable')[2].select('td')]
+    rewardStr = fund_hist_perf.pop(1)
+    colnames = [e + rewardStr  for e in fund_hist_perf[1:8]]
+    colnames.insert(0,fund_hist_perf[0])
+
+    for k,v in zip(colnames,fund_hist_perf[8:]):
+        fund_pref[k] = v
+    fund_pref.pop('基金名稱')
+    fund_pref['更新時間'] = pd.datetime.today()
+
+    return fund_pref
+
 
 
 if __name__ == '__main__':
 
     ## 連結database ## 
-    con = pypyodbc.connect("DRIVER={SQL Server};SERVER=xxxxxxx;UID=xxxxx;PWD=xxxxxxxx;DATABASE=External")
+    con = pypyodbc.connect("DRIVER={SQL Server};SERVER=dbm_public;UID=sa;PWD=01060728;DATABASE=External")
    
     ##### 基金id清單 ######
     # 國內
@@ -484,8 +524,8 @@ if __name__ == '__main__':
     print('=================='*2)
     
     ## 國內基金 ##
-    fundidsList = list(fundDict.keys())[:10]
-    ## 取得國內基金基本資料/經理人資料/持股狀況(個股/各分類) ##
+    fundidsList = list(fundDict.keys())
+    ## 取得國內基金基本資料/經理人資料/持股狀況(個股/各分類)/績效走勢 ##
     url_domestic_base = 'http://mmafund.sinopac.com/w/wr/'
     for no,fundid in enumerate(fundidsList):
         html_domestic_info = requests.get(url_domestic_base + 'wr01.djhtm?a=' + fundid).text
@@ -500,10 +540,12 @@ if __name__ == '__main__':
         fundStock_domestic = getDomesticStockHolding(soup_domestic_stock) 
         fundShare_domestic = getDomesticShareHolding(html_domestic_stock) 
 
+        fundPerformance = getPerformance(fundid)
+
         dataToDb(fundInfo_domestic,'[MMA基金基本資料]',con)
         dataToDb(fundManager_domestic,'[MMA國內基金歷任經理人]',con) 
-
-        dataToDb(fundStock_domestic, '[MMA基金持股狀況_個股]', con) 
+        dataToDb(fundStock_domestic, '[MMA基金持股狀況_個股]', con)
+        dataToDb(fundPerformance, '[MMA基金績效走勢]', con)
 
         if fundShare_domestic: 
 
@@ -513,7 +555,7 @@ if __name__ == '__main__':
             print('No.{} 國內基金: {} updated....'.format(no+1,fundid)) 
 
     ## 境外基金 ## 
-    wfundidsList = list(wfundDict.keys())[:10]
+    wfundidsList = list(wfundDict.keys())
     ## 取得境外基金 ##
     url_foreign_base = 'http://mmafund.sinopac.com/w/wb/'
     for no,wfundid in enumerate(wfundidsList):
@@ -525,10 +567,13 @@ if __name__ == '__main__':
  
         fundInfo_foreign = getForeignFundInfo(soup_foreign_info)        
         fundStock_foreign = getForeignStockHolding(soup_foreign_stock)
-        fundShare_foreign = getForeignShareHolding(html_foreign_stock) 
- 
+        fundShare_foreign = getForeignShareHolding(html_foreign_stock)         
+        wfundPerformance = getPerformance(wfundid)
+
         dataToDb(fundInfo_foreign, '[MMA基金基本資料]', con)
-        dataToDb(fundStock_foreign, '[MMA基金持股狀況_個股]', con) 
+        dataToDb(fundStock_foreign, '[MMA基金持股狀況_個股]', con)
+        dataToDb(wfundPerformance, '[MMA基金績效走勢]', con)
+
  
         if fundShare_foreign:
             for index, wfundShare in enumerate(fundShare_foreign):                
