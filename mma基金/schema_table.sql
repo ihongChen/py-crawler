@@ -23,11 +23,8 @@ CREATE TABLE MMA基金基本資料 (
 	計價幣別 VARCHAR(10),
 	註冊地 VARCHAR(20),
 	海外發行公司 VARCHAR(100),
-	投資策略 NVARCHAR(2000)
-	CONSTRAINT [UK_mma_fundinfo] UNIQUE CLUSTERED
- 	(
-        	fundID,基金規模
-	)	
+	投資策略 NVARCHAR(1000),
+	更新時間 SMALLDATETIME
 )
 
 
@@ -39,12 +36,10 @@ CREATE TABLE MMA基金持股狀況_個股 (
 	[持股(千股)] VARCHAR(10),
 	[比例] VARCHAR(5),
 	[持股名稱] nVARCHAR(100),
-	[資料月份] VARCHAR(8)
-	CONSTRAINT [UK_mma_stock] UNIQUE CLUSTERED
- 	(
-        	fundID,持股名稱,資料月份
-	)	
+	[資料月份] VARCHAR(8),
+	[更新時間] SMALLDATETIME
 )
+
 
 
 CREATE TABLE MMA基金持股狀況_分類(
@@ -54,12 +49,11 @@ CREATE TABLE MMA基金持股狀況_分類(
 	[投資金額(萬)] VARCHAR(10),
 	[幣別] VARCHAR(4),
 	[資料日期] VARCHAR(10),
-	[項目] VARCHAR(50)
-	CONSTRAINT [UK_mma_share] UNIQUE CLUSTERED
- 	(
-        	fundid,分類,項目,資料日期
-	)
+	[項目] VARCHAR(50),
+	[更新時間] SMALLDATETIME
 )
+
+
 -- 歷任經理人 --
 CREATE TABLE MMA國內基金歷任經理人(
 	
@@ -69,12 +63,14 @@ CREATE TABLE MMA國內基金歷任經理人(
 	[時間] VARCHAR(100),
 	[期間(月)] VARCHAR(100),
 	[現任基金] nVARCHAR(3000),
-	[經理人] VARCHAR(100)
-	CONSTRAINT [UK_mmafund_manager] UNIQUE CLUSTERED
- 	(
-        	fundID,時間,經理人
-	)
+	[經理人] VARCHAR(100),
+	[更新時間] SMALLDATETIME
+-- 	CONSTRAINT [UK_mmafund_manager] UNIQUE CLUSTERED
+--  	(
+--         	fundID,時間,經理人
+-- 	)
 )
+
 
 
 
@@ -238,4 +234,5 @@ SELECT * FROM MMA基金基本資料
 SELECT * FROM MMA基金持股狀況_個股
 SELECT * FROM MMA基金持股狀況_分類
 
+select top 10 * from MMA基金基本資料
 
