@@ -11,4 +11,11 @@ import scrapy
 class PttItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    title = scrapy.Field()
+    content = scrapy.Field()
+    board = scrapy.Field()
+    author = scrapy.Field()
+    post_time = scrapy.Field()
+    comments = scrapy.Field()
+    score = scrapy.Field()
+    url = scrapy.Field()    

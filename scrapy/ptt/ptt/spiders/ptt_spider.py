@@ -1,6 +1,7 @@
 import scrapy 
 import logging
 from datetime import datetime
+from ptt.items import PttItem
 
 class PTTSpider(scrapy.Spider):
     name = 'ptt' # 此名稱唯一且從cmd呼叫
@@ -16,7 +17,7 @@ class PTTSpider(scrapy.Spider):
     MAX_RETRY = 1
 
     COOKIES = {'over18':1}
-    MAX_PAGES = 2
+    MAX_PAGES = 1
     
 
     def start_requests(self):
@@ -32,15 +33,15 @@ class PTTSpider(scrapy.Spider):
         # print(response.text)
         self._pages += 1
         
+        ## 抓貼文連結 ##
         for post in response.css('.r-ent'):
-            post_url = response.urljoin(post.css('.title a::attr(href)').extract_first())
-            yield scrapy.Request(post_url, callback=self.parse_post, cookies=PTTSpider.COOKIES)
-            # yield {
-            #     'title' : post.css('.title a::text').extract_first(),
-            #     'url' : response.urljoin(post.css('.title a::attr(href)').extract_first()),                    
-            # }
-        if self._pages < PTTSpider.MAX_PAGES:
-            
+            post_url = response.urljoin(post.css('.title a::attr(href)').extract_first())                        
+            yield scrapy.Request(post_url,            
+                                callback=self.parse_post,
+                                cookies=PTTSpider.COOKIES)            
+
+        ## 是否下一頁 ##
+        if self._pages < PTTSpider.MAX_PAGES:            
             next_page = response.css('.btn.wide')
             if next_page:
                 url = response.urljoin(next_page[1].css('::attr(href)').extract_first())
@@ -56,7 +57,7 @@ class PTTSpider(scrapy.Spider):
         """每篇內文文章 """
         # from scrapy.shell import inspect_response
         # inspect_response(response, self)
-        item = {}
+        item = PttItem()
 
         try:
             author, board, title, post_time_str = response.css('.article-meta-value::text').extract()
@@ -89,9 +90,11 @@ class PTTSpider(scrapy.Spider):
 
         item['title'] = title
         item['board'] = board
+        item['content'] = content
         item['author'] = author
-        item['post_time'] = datetime.strptime(post_time_str,'%a %b %d %H:%M:%S %Y')
+        # item['post_time'] = datetime.strptime(post_time_str,'%a %b %d %H:%M:%S %Y')
+        item['post_time'] = post_time_str
         item['comments'] = comments
         item['score'] = total_score
         item['url'] = response.url
-        yield item
+        return item

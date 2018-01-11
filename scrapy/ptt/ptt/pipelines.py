@@ -5,7 +5,15 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
-
+import json
+# import pypyodbc
 class PttPipeline(object):
-    def process_item(self, item, spider):
+
+    def __init__(self):
+        self.file = open('data.json','w',encoding='utf8') ## write to file 
+        # self.con = pypyodbc.connect()
+    def process_item(self, item, spider):                
+        line = json.dumps(dict(item),ensure_ascii=False) + '\n'               
+        self.file.write(line)
+        
         return item
